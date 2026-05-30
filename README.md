@@ -9,6 +9,16 @@
 ### 一个高性能、功能完整的网关转换器，将 **Proxy Protocol v1/v2** 协议转换为 **X-Real-IP** 或 **X-Forwarded-For** 请求头，让不支持 Proxy Protocol 的应用获取真实客户端源IP。
 ### 使用它你必须确认:你的frp或者其他的程序可以发送Proxy Protocol v1/v2协议,你的后端接收程序必须支持反向代理请求头
 ### 比如Mcsmanager+Frp,这个项目的开发初衷也是这个,因为Mcsmanager本身不支持解析Proxy Protocol协议
+### Mcsmanager+Frp的示例:
+#### 面板配置:
+<img width="592" height="242" alt="9576ffa10dc8454568e84da2b64c8f69" src="https://github.com/user-attachments/assets/0233f55b-dc0f-431a-9c96-a01dc83ee2e5" />
+
+#### Frp配置:
+<img width="330" height="172" alt="9d6c0f251193381eb09f598c575fa1ab" src="https://github.com/user-attachments/assets/6727e77b-ebb2-4727-90e6-7223f91362be" />
+
+#### 程序配置:
+<img width="401" height="364" alt="d9ec1ed2fd083b21d3f5ec169f40cdfe" src="https://github.com/user-attachments/assets/e314cf0f-41b1-4d4e-98e9-c24be09d7303" />
+
 
 ## 核心特性
 
