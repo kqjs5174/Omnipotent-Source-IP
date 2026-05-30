@@ -1,0 +1,17 @@
+{
+  "listenHost": "0.0.0.0",
+  "listenPort": 8080,
+  "sslEnabled": false,
+  "sslKeyPath": "server.key",
+  "sslCertPath": "server.crt",
+  "target": "https://e.e:23333",
+  "proxyProtocol": "optional",
+  "realIpHeader": "X-Real-IP",
+  "forwardedForHeader": "X-Forwarded-For",
+  "forwardedProtoHeader": "X-Forwarded-Proto",
+  "preserveHost": true,
+  "trustProxyProtocolFrom": [],
+  "firstPacketTimeoutMs": 5000,
+  "logLevel": "info",
+  "logRequests": true
+}
