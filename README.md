@@ -6,7 +6,9 @@
 
 > **Proxy Protocol v1/v2 协议转换网关** — 为 frp 及其他代理工具提供源IP传递支持
 
-一个高性能、功能完整的网关转换器，将 **Proxy Protocol v1/v2** 协议转换为 **X-Real-IP** 或 **X-Forwarded-For** 请求头，让不支持 Proxy Protocol 的应用获取真实客户端源IP。
+### 一个高性能、功能完整的网关转换器，将 **Proxy Protocol v1/v2** 协议转换为 **X-Real-IP** 或 **X-Forwarded-For** 请求头，让不支持 Proxy Protocol 的应用获取真实客户端源IP。
+### 使用它你必须确认:你的frp或者其他的程序可以发送Proxy Protocol v1/v2协议,你的后端接收程序必须支持反向代理请求头
+### 比如Mcsmanager+Frp,这个项目的开发初衷也是这个,因为Mcsmanager本身不支持解析Proxy Protocol协议
 
 ## 核心特性
 
