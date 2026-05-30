@@ -4,9 +4,9 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Build Status](https://img.shields.io/badge/status-stable-success)
 
-> **Proxy Protocol v1/v2 协议转换网关** — 让所有不支持 Proxy Protocol 的软件轻松获取真实源IP
+> **Proxy Protocol v1/v2 协议转换网关** — 为 frp 及其他代理工具提供源IP传递支持
 
-一个高性能、功能完整的代理网关，将 **Proxy Protocol v1/v2** 协议转换为标准的 **X-Real-IP** 和 **X-Forwarded-For** HTTP 请求头，使得后端应用无需修改代码即可获取真实客户端源IP。
+一个高性能、功能完整的网关转换器，将 **Proxy Protocol v1/v2** 协议转换为标准的 **X-Real-IP** 和 **X-Forwarded-For** HTTP 请求头，让不支持 Proxy Protocol 的后端应用轻松获取真实客户端源IP。
 
 ## ✨ 核心特性
 
@@ -24,10 +24,11 @@
 
 | 场景 | 说明 |
 |-----|------|
+| **frp 反向代理** | frp 配置 Proxy Protocol，将真实 IP 转换为 HTTP 头 |
 | **云负载均衡** | 阿里云 SLB、腾讯云 CLB 等使用 Proxy Protocol 传递真实 IP |
 | **CDN 回源** | CDN 节点使用 Proxy Protocol，需要转换给后端应用 |
-| **反向代理** | Nginx、HAProxy 等反向代理使用 Proxy Protocol |
-| **不支持协议的软件** | MCSManager、Minecraft 服务器、应用面板等 |
+| **其他代理工具** | Nginx、HAProxy、EasyProxy 等反向代理 |
+| **适配遗留应用** | MCSManager、Minecraft 服务器、应用面板等 |
 
 ## 📦 快速开始
 
@@ -92,30 +93,31 @@ node proxy-protocol-gateway.js custom-config.json
 
 ## 📋 使用示例
 
-### 示例 1：基础 HTTP 网关（MCSManager）
+### 示例 1：frp 代理场景
+
+```json
+{
+  "listenHost": "0.0.0.0",
+  "listenPort": 8080,
+  "target": "http://127.0.0.1:3000",
+  "proxyProtocol": "required",
+  "trustProxyProtocolFrom": ["127.0.0.1"],
+  "realIpHeader": "X-Real-IP",
+  "logRequests": true
+}
+```
+
+配置 frp 启用 Proxy Protocol，网关自动转换为 X-Real-IP 头
+
+### 示例 2：多上游代理（负载均衡+frp）
 
 ```json
 {
   "listenHost": "0.0.0.0",
   "listenPort": 8080,
   "target": "http://127.0.0.1:23333",
-  "proxyProtocol": "optional",
-  "realIpHeader": "X-Real-IP",
-  "logRequests": true
-}
-```
-
-启动后，在 MCSManager 中配置反向代理头为 `X-Real-IP`
-
-### 示例 2：生产环境（强制 Proxy Protocol + 信任名单）
-
-```json
-{
-  "listenHost": "0.0.0.0",
-  "listenPort": 8080,
-  "target": "https://backend.example.com:443",
   "proxyProtocol": "required",
-  "trustProxyProtocolFrom": ["127.0.0.1", "10.0.0.10", "203.0.113.5"],
+  "trustProxyProtocolFrom": ["127.0.0.1", "10.0.0.10"],
   "realIpHeader": "X-Real-IP",
   "forwardedForHeader": "X-Forwarded-For",
   "logLevel": "info"
@@ -137,17 +139,18 @@ node proxy-protocol-gateway.js custom-config.json
 
 启动网关后，将看到详细的 Proxy Protocol 解析日志。
 
-### 示例 4：HTTPS 网关
+### 示例 4：HTTPS + frp
 
 ```json
 {
   "listenHost": "0.0.0.0",
   "listenPort": 443,
-  "target": "http://127.0.0.1:8888",
-  "proxyProtocol": "optional",
+  "target": "http://127.0.0.1:3000",
+  "proxyProtocol": "required",
   "sslEnabled": true,
   "sslKeyPath": "/etc/ssl/private/server.key",
   "sslCertPath": "/etc/ssl/certs/server.crt",
+  "realIpHeader": "X-Real-IP",
   "logRequests": true
 }
 ```
@@ -156,7 +159,7 @@ node proxy-protocol-gateway.js custom-config.json
 
 ```
 ┌─────────────────────────────┐
-│   负载均衡器 / CDN          │
+│   frp / 负载均衡器 / CDN    │
 │  (发送 Proxy Protocol)       │
 └──────────────┬──────────────┘
                │ TCP 连接
@@ -173,10 +176,10 @@ node proxy-protocol-gateway.js custom-config.json
                │ HTTP/WebSocket + X-Real-IP
                ▼
 ┌─────────────────────────────┐
-│   后端应用                  │
+│   后端应用服务              │
 │ (获取真实源IP)              │
 │ - MCSManager                │
-│ - Web 服务                  │
+│ - Web 应用                  │
 │ - 应用面板                  │
 └─────────────────────────────┘
 ```
